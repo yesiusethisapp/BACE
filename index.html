@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biotech Quiz Application</title>
+    
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" 
+          integrity="sha384-nKqIjj0G+nB3Z7R9oD68lH7U/2x2D+T9G4t8o3m/X6s6+fT6I5F9d6aD1/bS0g4p" crossorigin="anonymous">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" 
+            integrity="sha384-t398GqR/b+H5pX+B8pD/G8b/d8F/v2K1Yf2C7+F7d6F7g+o" crossorigin="anonymous"></script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+            integrity="sha384-r+S4Fj33tG+nN+n3ZpS+nB+d8D4b8P4n5n3F7d4b4n4p+t6F7d4b4n4p+t6F7d4b4n4p" crossorigin="anonymous"></script>
+</head>
+<body> 
+
+    <div class="container">
+        <h1>Biotech Technical Quiz</h1>
+        
+        <div id="setup-area">
+            <h2>Loading Questions...</h2>
+        </div>
+
+        <div id="quiz-area" style="display:none;">
+            <p id="question-number"></p>
+            <p class="category-info" id="category-name"></p>
+            
+            <h3 id="question-text"></h3>
+            
+            <ul id="options-list">
+                </ul>
+
+            <div class="controls">
+                <button id="check-btn">Check Answer</button>
+                <button id="next-btn" style="display:none;">Next Question &raquo;</button>
+            </div>
+            
+            <div id="explanation-area" class="explanation-box">
+                </div>
+        </div>
+
+        <div id="score-container" class="results-box" style="display:none;">
+            <h2>Quiz Complete!</h2>
+            <p>Your Final Score: <span id="final-score"></span> out of <span id="total-questions"></span></p>
+            <p class="score-message"></p>
+            <button id="retake-btn">Start New Quiz</button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
