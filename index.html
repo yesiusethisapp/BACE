@@ -1,57 +1,133 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biotech Quiz Application</title>
-    
-    <link rel="stylesheet" href="style.css">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Biotech Quiz Application</title>
+		<link rel="stylesheet" href="style.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+			crossorigin="anonymous"
+		/>
+		<script
+			defer
+			src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+			crossorigin="anonymous"
+		></script>
+		<script
+			defer
+			src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+			crossorigin="anonymous"
+		></script>
+	</head>
+	<body>
+		<canvas id="confetti-canvas"></canvas>
+		<div id="feedback-toast"></div>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" 
-          integrity="sha384-nKqIjj0G+nB3Z7R9oD68lH7U/2x2D+T9G4t8o3m/X6s6+fT6I5F9d6aD1/bS0g4p" crossorigin="anonymous">
+		<div class="container">
+			<h1>Biotech Technical Quiz</h1>
 
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" 
-            integrity="sha384-t398GqR/b+H5pX+B8pD/G8b/d8F/v2K1Yf2C7+F7d6F7g+o" crossorigin="anonymous"></script>
+			<!-- HUD -->
+			<div id="hud-bar">
+				<div class="hud-stat">
+					<span class="hud-label">Question</span>
+					<span class="hud-value" id="hud-question">—</span>
+				</div>
+				<div class="hud-stat">
+					<span class="hud-label">Score</span>
+					<span class="hud-value score" id="hud-score">0</span>
+				</div>
+				<div class="hud-stat">
+					<span class="hud-label">Streak 🔥</span>
+					<span class="hud-value streak" id="hud-streak">0</span>
+				</div>
+				<div class="hud-stat">
+					<span class="hud-label">Accuracy</span>
+					<span class="hud-value" id="hud-accuracy">—</span>
+				</div>
+			</div>
 
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
-            integrity="sha384-r+S4Fj33tG+nN+n3ZpS+nB+d8D4b8P4n5n3F7d4b4n4p+t6F7d4b4n4p+t6F7d4b4n4p" crossorigin="anonymous"></script>
-</head>
-<body> 
+			<!-- Progress -->
+			<div id="progress-wrap">
+				<div class="progress-label">
+					<span id="progress-label-left">Progress</span>
+					<span id="progress-pct">0%</span>
+				</div>
+				<div class="progress-track">
+					<div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+				</div>
+			</div>
 
-    <div class="container">
-        <h1>Biotech Technical Quiz</h1>
-        
-        <div id="setup-area">
-            <h2>Loading Questions...</h2>
-        </div>
+			<!-- Setup -->
+			<div id="setup-area">
+				<div class="loader">
+					<div class="loader-ring"></div>
+					<span>Connecting to lab database…</span>
+				</div>
+			</div>
 
-        <div id="quiz-area" style="display:none;">
-            <p id="question-number"></p>
-            <p class="category-info" id="category-name"></p>
-            
-            <h3 id="question-text"></h3>
-            
-            <ul id="options-list">
-                </ul>
+			<!-- Quiz -->
+			<div id="quiz-area" style="display: none">
+				<p class="category-info" id="category-name"></p>
+				<h3 id="question-text"></h3>
+				<ul id="options-list"></ul>
 
-            <div class="controls">
-                <button id="check-btn">Check Answer</button>
-                <button id="next-btn" style="display:none;">Next Question &raquo;</button>
-            </div>
-            
-            <div id="explanation-area" class="explanation-box">
-                </div>
-        </div>
+				<div class="controls">
+					<button id="check-btn">Check Answer</button>
+					<button id="next-btn" style="display: none">Next Question →</button>
+				</div>
 
-        <div id="score-container" class="results-box" style="display:none;">
-            <h2>Quiz Complete!</h2>
-            <p>Your Final Score: <span id="final-score"></span> out of <span id="total-questions"></span></p>
-            <p class="score-message"></p>
-            <button id="retake-btn">Start New Quiz</button>
-        </div>
+				<div class="keyboard-hint">
+					<span>Keyboard:</span>
+					<kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> select &nbsp;·&nbsp;
+					<kbd>Enter</kbd> check / next
+				</div>
 
-    </div>
+				<div id="explanation-area" class="explanation-box"></div>
+			</div>
 
-    <script src="script.js"></script>
-</body>
+			<!-- Results -->
+			<div id="score-container" style="display: none">
+				<h2>Lab Session Complete</h2>
+				<div class="score-ring" id="score-ring">
+					<svg width="140" height="140" viewBox="0 0 140 140">
+						<circle
+							cx="70"
+							cy="70"
+							r="58"
+							fill="none"
+							stroke="rgba(0,229,255,0.08)"
+							stroke-width="10"
+						/>
+						<circle
+							cx="70"
+							cy="70"
+							r="58"
+							fill="none"
+							stroke="url(#scoreGrad)"
+							stroke-width="10"
+							stroke-dasharray="364.4"
+							stroke-dashoffset="364.4"
+							stroke-linecap="round"
+							id="score-arc"
+						/>
+						<defs>
+							<linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="0">
+								<stop offset="0%" stop-color="#00e5ff" />
+								<stop offset="100%" stop-color="#7c3aed" />
+							</linearGradient>
+						</defs>
+					</svg>
+					<span class="score-ring-value" id="ring-fraction">—</span>
+					<span class="score-ring-label">correct</span>
+				</div>
+				<p class="score-message" id="score-message"></p>
+				<p class="score-breakdown" id="score-breakdown"></p>
+				<button id="retake-btn">↩ New Quiz</button>
+			</div>
+		</div>
+
+		<script src="script.js"></script>
+	</body>
 </html>
